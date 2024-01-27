@@ -36,6 +36,15 @@ body {
 	color: #2fa2a6; 
 	font-size: 20px; 
 } 
+.group button {
+	top: -45px;
+	right: -260px;
+	width: 80px;
+	height: 30px;
+	position: relative;
+	font-size: 20px;
+	color: #185557; 
+}
 
 .power-container { 
     background-color: #2E424D; 

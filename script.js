@@ -1,6 +1,9 @@
 const pass = document.getElementById("password");
 const power = document.getElementById("power-point");
 const reasons = document.getElementById("reasons");
+const button = document.getElementById("button");
+
+const pwndAPI = "https://api.pwnedpasswords.com/range/";
 
 var widthPower = 
     ["1%", "25%", "50%", "75%", "100%"]; 
@@ -8,6 +11,48 @@ var colorPower =
     ["#D73F40", "#DC6551", "#F2B84F", "#BDE952", "#3ba62f"];
 
 pass.addEventListener('input', updateMeter);
+button.addEventListener('click', checkPwned);
+
+function checkPwned(){
+    let value = pass.value;
+    var sha = sha1(value).toUpperCase();
+    var prefix = sha.substring(0, 5);
+    var suffix = sha.substring(5, sha.length);
+    
+    fetch(pwndAPI + prefix)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        return response.text();
+    })
+    .then(data => {
+            if (power.style.width == "100%"){
+                
+            var hashes = data.split('\n');
+            var breached = false;
+
+            for(let i = 0; i < hashes.length; i++){
+                var hash = hashes[i];
+                var h = hash.split(":");
+                if (h[0] == suffix) {
+                    breached = true;
+                    reasons.innerText = "Password has been breached " + h[1].slice(0, -1) + " times";
+                    break;
+                }
+            }
+            if(!breached){
+                reasons.innerText = "Password has not been breached";
+            }
+        }
+        
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 
 function calcStrength(){ 
 	let value = pass.value;
@@ -62,7 +107,9 @@ function updateMeter(){
     }
 
     if (power.style.width == "100%"){
-        reasons.textContent = "This is a strong password";
+        const messageElement = document.createElement('div');
+        messageElement.innerText = 'Password is strong';
+        reasons.appendChild(messageElement);
         return;
     }
 }
