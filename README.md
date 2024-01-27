@@ -1,7 +1,7 @@
 # Password-Strength-Tester
 
-##Introduction
+## Introduction
 
-##Motivation
+## Motivation
 
-##Improvements
+## Improvements
